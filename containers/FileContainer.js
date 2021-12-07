@@ -24,13 +24,13 @@ module.exports = class FileContainer {
         }
     }
 
-    async save(obj) {
-        if(typeof obj === 'object') {
-            obj['id'] = ++this.lastId;
-            obj['timestamp'] = moment().format('D/M/YY H:m');
-            this.objects.push(obj);
+    async save(newObject) {
+        if(typeof newObject === 'object') {
+            newObject['id'] = ++this.lastId;
+            newObject['timestamp'] = moment();
+            this.objects.push(newObject);
             await fsPromises.writeFile(this.filePath, JSON.stringify({ objects: this.objects }, null, 2));
-            return obj.id;
+            return newObject.id;
         }
         return null;
     }
@@ -48,7 +48,7 @@ module.exports = class FileContainer {
     }
 
     getById(id) {
-        if(typeof id === 'number' && this.objects.length > 0 && id >0 && id <= this.objects.length) {
+        if(typeof id === 'number' && this.objects.length > 0 && id > 0 && id <= this.objects.length) {
             return this.objects[id - 1];
         } else {
             return null;
@@ -59,10 +59,10 @@ module.exports = class FileContainer {
         return this.objects;
     }
 
-    async deleteById(n) {
-        if(typeof n === 'number') {
-            if(n <= this.objects.length) {
-                let newArray = this.objects.filter(obj => obj !== this.objects[n - 1]);
+    async deleteById(id) {
+        if(typeof id === 'number') {
+            if(id <= this.objects.length) {
+                let newArray = this.objects.filter(obj => obj !== this.objects[id - 1]);
                 await fsPromises.writeFile(this.filePath, JSON.stringify({ objects: newArray }, null, 2));
             }
         }
